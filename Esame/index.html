@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accademia - Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('/images/accademia.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: center;  /* Centra il contenuto orizzontalmente */
+            align-items: center;  /* Allineamento verticale */
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            text-align: center;
+        }
+
+        .logo {
+            max-width: 120px;
+            max-height: 80px;
+            object-fit: contain;
+            margin-left: 20px;
+        }
+
+        nav {
+            width: 100%;
+            display: flex;
+            justify-content: center;  /* Centra la barra di navigazione orizzontalmente */
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex; /* Aggiunto per fare in modo che i menu siano allineati orizzontalmente */
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 20px;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            min-height: 300px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+
+        button {
+            background-color: #ffcc00;
+            color: black;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #e6b800;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background: white;
+            color: black;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #6e8efb;
+            color: white;
+        }
+
+        footer {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            text-align: center;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Benvenuto nell'Accademia</h1>
+        <img src="/images/star.gif" alt="Logo" class="logo"> <!-- Inserisci il tuo logo animato -->
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#about">Chi Siamo</a></li>
+            <li><a href="#tables">Dati</a></li>
+        </ul>
+    </nav>
+    
+    <section id="about">
+        <h2>Chi Siamo</h2>
+        <p>L'Accademia offre corsi di formazione di alta qualità per gli studenti desiderosi di apprendere nuove competenze.</p>
+    </section>
+    
+    <section id="tables">
+        <h2>Consulta i Dati</h2>
+        <label for="table-select">Scegli una tabella:</label>
+        <select id="table-select">
+            <option value="persona">Persone</option>
+            <option value="assenza">Assenze</option>
+            <option value="wp">WP</option>
+        </select>
+        <button onclick="fetchData()">Carica Dati</button>
+        <div id="data-container"></div>
+    </section>
+    
+    <footer>
+        <p>&copy; 2025 Accademia. Tutti i diritti riservati.</p>
+    </footer>
+    
+    <script>
+        function fetchData() {
+            let table = document.getElementById("table-select").value;
+            fetch(`/api/${table}`)
+                .then(response => response.json())
+                .then(data => {
+                    let container = document.getElementById("data-container");
+                    container.innerHTML = "<h3>Risultati:</h3>";
+                    let tableHtml = "<table><tr>";
+                    if (data.length > 0) {
+                        Object.keys(data[0]).forEach(key => {
+                            tableHtml += `<th>${key}</th>`;
+                        });
+                        tableHtml += "</tr>";
+                        data.forEach(row => {
+                            tableHtml += "<tr>";
+                            Object.values(row).forEach(value => {
+                                tableHtml += `<td>${value}</td>`;
+                            });
+                            tableHtml += "</tr>";
+                        });
+                        tableHtml += "</table>";
+                    } else {
+                        tableHtml = "<p>Nessun dato trovato.</p>";
+                    }
+                    container.innerHTML += tableHtml;
+                })
+                .catch(error => console.error("Errore nel caricamento dati:", error));
+        }
+    </script>
+</body>
+</html>
